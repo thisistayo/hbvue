@@ -17,26 +17,31 @@ export default {
       imageUrl: null,
       formattedDate: null,
       error: null,
+      intervalId: null,
     };
   },
   mounted() {
     this.getRandomPicture();
+
+    // Use setInterval to fetch a new picture every 30 seconds
+    this.intervalId = setInterval(() => {
+      this.getRandomPicture();
+    }, 10000); // 10 seconds in milliseconds
+  },
+  beforeUnmount() {
+    // Clear the interval when the component is about to be unmounted
+    clearInterval(this.intervalId);
   },
   methods: {
     async getRandomPicture() {
       try {
-        // Define the bookends for available dates
-        const startDate = new Date(2017, 0, 1); // 1st January 2017
+        const startDate = new Date(2017, 0, 1);
         const endDate = new Date();
-        endDate.setDate(endDate.getDate() - 1); // Yesterday's date
+        endDate.setDate(endDate.getDate() - 1);
 
-        // Generate a random date within the specified range
         const randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
-
-        // Format the date as Month DayST, Year
         this.formattedDate = this.formatDate(randomDate);
 
-        // Construct the URL with the randomly generated date
         this.imageUrl = `https://s3.hbvu.su/blotpix/${randomDate.getFullYear()}/${String(randomDate.getMonth() + 1).padStart(2, '0')}/${String(randomDate.getDate()).padStart(2, '0')}.jpeg`;
 
         // Emit an event to inform the parent (App.vue) about the new picture
@@ -83,8 +88,8 @@ export default {
 }
 
 .card {
-  width: 500px;
-  border: 1px solid #000; /* Black border */
+  width: 300px;
+  border: 1px solid #000;
   border-radius: 8px;
   overflow: hidden;
   font-family: Verdana, sans-serif;
@@ -92,7 +97,7 @@ export default {
 
 .card-img-top {
   width: 100%;
-  height: 500px;
+  height: 300px;
   object-fit: cover;
 }
 

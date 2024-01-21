@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <header class="header">
-      <!-- Add your navbar or any other header content here -->
-      Header Content
+      <!-- <button @click.prevent="getRandomPicture" class="btn btn-link">Get New Picture</button> -->
+      
     </header>
     
     <main class="main">
@@ -14,7 +14,6 @@
 
     <footer class="footer">
       <!-- Replace the anchor with a button element -->
-      <button @click.prevent="getRandomPicture" class="btn btn-link">Get New Picture</button>
     </footer>
   </div>
 </template>
@@ -55,7 +54,7 @@ export default {
 
 .header, .footer {
   flex: 0 0 5%;
-  background-color: #f0f0f0;
+  background-color: white;
   padding: 10px;
 }
 
@@ -79,7 +78,7 @@ export default {
 
 .btn-link {
   font-family: Verdana, sans-serif;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
 }
 </style>
