@@ -1,4 +1,4 @@
-# s3-picture-app
+# hbvue-pix
 
 ## Project setup
 ```

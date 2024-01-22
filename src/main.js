@@ -1,14 +1,21 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import axios from 'axios';
+import { createRouter, createWebHashHistory } from 'vue-router';
+import LandingPage from './components/LandingPage.vue';
 
-// Define the feature flags
-window.__VUE_PROD_DEVTOOLS__ = false;
-window.__VUE_PROD_DEVTOOLS__ = false;
-window.__VUE_PROD_HIDE_INTERNAL_FRAMES__ = true;
+const routes = [
+    { path: '/', name: 'Home', component: LandingPage },
+    { path: '/landing', name: 'LandingPage', component: LandingPage },
+    // ... other routes
+];
+
+const router = createRouter({
+    history: createWebHashHistory(),
+    routes,
+});
+
 const app = createApp(App);
 
-// Set up axios globally
-app.config.globalProperties.$axios = axios;
+app.use(router);
 
 app.mount('#app');

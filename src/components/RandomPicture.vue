@@ -79,7 +79,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .container {
   display: flex;
   align-items: center;
@@ -87,27 +87,31 @@ export default {
   height: 100vh;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 .card {
-  width: 300px;
-  border: 1px solid #000;
-  border-radius: 8px;
-  overflow: hidden;
-  font-family: Verdana, sans-serif;
+    width: 300px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: Verdana, sans-serif;
 }
 
 .card-img-top {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
 }
 
 .card-body {
-  padding: 15px;
-  text-align: center;
+    padding: 15px;
+    text-align: center;
 }
 
 .card-text {
-  margin: 0;
-  font-size: 20px;
+    margin: 0;
+    font-size: 20px;
 }
 </style>
