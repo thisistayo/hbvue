@@ -2,12 +2,12 @@
   <div class="landing-page">
     <div class="container">
       <!-- Column 1: Random Picture -->
-      <div class="column picture-column">
+      <div class="column picture-column" :style="pictureColumnStyle">
         <RandomPicture @pictureFetched="updateRandomImage" />
       </div>
 
       <!-- Column 2: Form -->
-      <div class="column form-column">
+      <div class="column form-column" :style="formColumnStyle">
         <h1>EKSKOG 365</h1>
         <form @submit.prevent="submitForm" class="form">
           <div class="form-group">
@@ -29,73 +29,143 @@
   </div>
 </template>
 
-<script>
-import RandomPicture from "@/components/RandomPicture"; // Import the RandomPicture component
+<script setup>
+import { ref } from 'vue';
+import { useVue3Mq } from 'vue3-mq';
+import RandomPicture from "@/components/RandomPicture";
 
-export default {
-  components: {
-    RandomPicture, // Register the RandomPicture component
+const { is } = useVue3Mq();
+const currentYear = new Date().getFullYear();
+
+const selectedMonth = ref("");
+const selectedYear = ref("");
+const months = [
+  { label: "January", value: "1" },
+  { label: "February", value: "2" },
+  { label: "March", value: "3" },
+  { label: "April", value: "4" },
+  { label: "May", value: "5" },
+  { label: "June", value: "6" },
+  { label: "July", value: "7" },
+  { label: "August", value: "8" },
+  { label: "September", value: "9" },
+  { label: "October", value: "10" },
+  { label: "November", value: "11" },
+  { label: "December", value: "12" },
+];
+
+const updateRandomImage = ({ imageUrl, formattedDate }) => {
+  // Update the random image details on the landing page
+  randomImageUrl.value = imageUrl;
+  randomImageDate.value = formattedDate;
+};
+
+const submitForm = () => {
+  if (validateYear()) {
+    // Emit an event to notify the parent component with selectedMonth and selectedYear
+    this.$emit("form-submitted", {
+      month: selectedMonth.value,
+      year: selectedYear.value,
+    });
+  } else {
+    alert("Please enter a valid year between 2010 and " + currentYear);
+  }
+};
+
+const validateYear = () => {
+  const enteredYear = parseInt(selectedYear.value, 10);
+  return !isNaN(enteredYear) && enteredYear >= 2010 && enteredYear <= currentYear;
+};
+
+const pictureColumnStyle = is('sm') ? 'width: 100%;' : 'flex: 1;';
+const formColumnStyle = is('sm') ? 'width: 100%;' : 'flex: 1;';
+
+console.log('Is sm?', is('sm'));
+console.log('Is md?', is('md'));
+console.log('Is lg?', is('lg'));
+console.log('Picture column style:', pictureColumnStyle);
+console.log('Form column style:', formColumnStyle);
+
+</script>
+<!--
+<script setup>
+import { ref } from 'vue';
+import { useVue3Mq } from 'vue3-mq';
+import RandomPicture from "@/components/RandomPicture";
+
+const { is } = useVue3Mq();
+const currentYear = new Date().getFullYear();
+
+const data = {
+  selectedMonth: "",
+  selectedYear: "",
+  months: [
+    { label: "January", value: "1" },
+    { label: "February", value: "2" },
+    { label: "March", value: "3" },
+    { label: "April", value: "4" },
+    { label: "May", value: "5" },
+    { label: "June", value: "6" },
+    { label: "July", value: "7" },
+    { label: "August", value: "8" },
+    { label: "September", value: "9" },
+    { label: "October", value: "10" },
+    { label: "November", value: "11" },
+    { label: "December", value: "12" },
+  ],
+};
+
+const methods = {
+  updateRandomImage({ imageUrl, formattedDate }) {
+    // Update the random image details on the landing page
+    data.randomImageUrl = imageUrl;
+    data.randomImageDate = formattedDate;
+    console.log('Çhanging Image')
   },
-  data() {
-    return {
-      selectedMonth: "",
-      selectedYear: "",
-      currentYear: new Date().getFullYear(),
-      months: [
-        { label: "January", value: "1" },
-        { label: "February", value: "2" },
-        { label: "March", value: "3" },
-        { label: "April", value: "4" },
-        { label: "May", value: "5" },
-        { label: "June", value: "6" },
-        { label: "July", value: "7" },
-        { label: "August", value: "8" },
-        { label: "September", value: "9" },
-        { label: "October", value: "10" },
-        { label: "November", value: "11" },
-        { label: "December", value: "12" },
-      ],
-    };
+  submitForm() {
+    if (validateYear()) {
+      // Emit an event to notify the parent component with selectedMonth and selectedYear
+      this.$emit("form-submitted", {
+        month: data.selectedMonth,
+        year: data.selectedYear,
+      });
+    } else {
+      alert("Please enter a valid year between 2010 and " + currentYear);
+    }
   },
-  methods: {
-    updateRandomImage({ imageUrl, formattedDate }) {
-      // Update the random image details on the landing page
-      this.randomImageUrl = imageUrl;
-      this.randomImageDate = formattedDate;
-    },
-    submitForm() {
-      if (this.validateYear()) {
-        // Emit an event to notify the parent component with selectedMonth and selectedYear
-        this.$emit("form-submitted", {
-          month: this.selectedMonth,
-          year: this.selectedYear,
-        });
-      } else {
-        alert("Please enter a valid year between 2010 and " + this.currentYear);
-      }
-    },
-    validateYear() {
-      const enteredYear = parseInt(this.selectedYear, 10);
-      return !isNaN(enteredYear) && enteredYear >= 2010 && enteredYear <= this.currentYear;
-    },
+  validateYear() {
+    const enteredYear = parseInt(data.selectedYear, 10);
+    return !isNaN(enteredYear) && enteredYear >= 2010 && enteredYear <= currentYear;
   },
 };
+
+const setup = () => {
+  const pictureColumnStyle = is('sm') ? 'width: 100%;' : 'flex: 1;';
+  const formColumnStyle = is('sm') ? 'width: 100%;' : 'flex: 1;';
+  console.log('Is sm?', is('sm'));
+  console.log('Is md?', is('md'));
+  console.log('Is lg?', is('lg'));
+  console.log('Picture column style:', pictureColumnStyle);
+  console.log('Form column style:', formColumnStyle);
+  return {
+    ...data,
+    ...methods,
+    pictureColumnStyle,
+    formColumnStyle,
+  };
+};
 </script>
-
+-->
 <style scoped>
-/* Your existing styles here */
-
 .landing-page {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
-
 .container {
   display: flex;
 }
-
 .column {
   flex: 1;
   padding: 20px;
@@ -112,7 +182,6 @@ h1 {
 
 .form {
   width: 300px;
-  /* Adjust the form width as needed */
 }
 
 .form-group {
@@ -131,7 +200,6 @@ input {
   font-size: 1rem;
   margin-bottom: 10px;
   box-sizing: border-box;
-  /* Ensure padding and border don't affect the width */
 }
 
 button {
@@ -141,5 +209,17 @@ button {
   font-size: 1rem;
   cursor: pointer;
   border: none;
+}
+
+.picture-column {
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.form-column {
+  @media (max-width: 767px) {
+    width: 100%;
+  }
 }
 </style>
