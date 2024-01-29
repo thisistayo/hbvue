@@ -5,14 +5,19 @@
             <div class="month-year">{{ getMonthName(month) }} {{ year }}</div>
         </div>
         <div class="thumbnails">
-            <ImageThumbnail v-for="(imageUrl, index) in imageUrls" :key="index" :imageUrl="imageUrl" />
+            <ImageThumbnail v-for="(imageUrl, index) in imageUrls" :key="index" :imageUrl="imageUrl"
+                @click="openImageOverlay(imageUrl)" />
             <div v-if="imageUrls.length === 0">Fetching....</div>
         </div>
+        <ImageOverlay :showOverlay="showOverlay" :selectedImage="selectedImage" @close-overlay="closeOverlay" />
     </div>
 </template>
   
 <script>
+/* eslint-disable no-unused-vars */
+
 import ImageThumbnail from "@/components/ImageThumbnail";
+import ImageOverlay from "@/components/ImageOverlay";
 import axios from "axios";
 
 export default {
@@ -29,16 +34,18 @@ export default {
     data() {
         return {
             imageUrls: [],
+            showOverlay: false,
+            selectedImage: "",
         };
     },
     components: {
         ImageThumbnail,
+        ImageOverlay
     },
     mounted() {
         this.fetchImages();
     },
     methods: {
-
         async fetchImages() {
             console.log(this.year + '/' + this.month)
             const lastDay = new Date(this.year, this.month, 0).getDate();
@@ -75,6 +82,16 @@ export default {
             console.log("home pressed")
 
         },
+        openImageOverlay(imageUrl) {
+            console.log('Opening image overlay for:', imageUrl);
+            this.selectedImage = imageUrl;
+            this.showOverlay = true;
+        },
+
+        closeOverlay() {
+            this.showOverlay = false;
+            this.selectedImage = "";
+        },
     },
 };
 </script>
@@ -110,24 +127,29 @@ export default {
 .thumbnails {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px; /* Adjust the spacing between images and rows as needed */
-  }
+    gap: 10px;
+    /* Adjust the spacing between images and rows as needed */
+}
 
-  .image-thumbnail {
+.image-thumbnail {
     width: 100%;
     height: 0;
-    padding-bottom: 100%; /* Maintain a 1:1 aspect ratio (square) */
+    padding-bottom: 100%;
+    /* Maintain a 1:1 aspect ratio (square) */
     position: relative;
-  }
+}
 
-  .image-thumbnail img {
+.image-thumbnail img {
     position: absolute;
     width: 100%;
     height: 100%;
-    max-width: 100%; /* Ensure the image doesn't exceed the container width */
-    max-height: 100%; /* Ensure the image doesn't exceed the container height */
-    object-fit: cover; /* Maintain aspect ratio and cover the container */
-    border: 1px solid black; /* Add a 1-pixel black border */
-  }
-
+    max-width: 100%;
+    /* Ensure the image doesn't exceed the container width */
+    max-height: 100%;
+    /* Ensure the image doesn't exceed the container height */
+    object-fit: cover;
+    /* Maintain aspect ratio and cover the container */
+    border: 1px solid black;
+    /* Add a 1-pixel black border */
+}
 </style>

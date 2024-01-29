@@ -1,8 +1,8 @@
 <template>
-    <div class="image-thumbnail">
-      <img :src="imageUrl" @load="onImageLoad" alt="Thumbnail" />
-    </div>
-  </template>
+  <div class="image-thumbnail" @click="handleClick">
+    <img :src="imageUrl" @load="onImageLoad" alt="Thumbnail" />
+  </div>
+</template>
   
   <script>
   export default {
@@ -16,6 +16,9 @@
       onImageLoad() {
         console.log(`Image displayed`);
       },
+      handleClick() {
+      console.log('Thumbnail clicked:', this.imageUrl);
+    },
     },
   };
   </script>
