@@ -31,10 +31,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useVue3Mq } from 'vue3-mq';
 import RandomPicture from "@/components/RandomPicture";
 
-const { is } = useVue3Mq();
 const currentYear = new Date().getFullYear();
 
 const selectedMonth = ref("");
@@ -53,6 +51,9 @@ const months = [
   { label: "November", value: "11" },
   { label: "December", value: "12" },
 ];
+
+const randomImageUrl = ref("");
+const randomImageDate = ref("");
 
 const updateRandomImage = ({ imageUrl, formattedDate }) => {
   // Update the random image details on the landing page
@@ -77,16 +78,8 @@ const validateYear = () => {
   return !isNaN(enteredYear) && enteredYear >= 2010 && enteredYear <= currentYear;
 };
 
-const pictureColumnStyle = is('sm') ? 'width: 100%;' : 'flex: 1;';
-const formColumnStyle = is('sm') ? 'width: 100%;' : 'flex: 1;';
-
-console.log('Is sm?', is('sm'));
-console.log('Is md?', is('md'));
-console.log('Is lg?', is('lg'));
-console.log('Picture column style:', pictureColumnStyle);
-console.log('Form column style:', formColumnStyle);
-
 </script>
+
 <!--
 <script setup>
 import { ref } from 'vue';

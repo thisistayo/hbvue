@@ -46,7 +46,7 @@ export default {
             for (let day = 1; day <= lastDay; day++) {
                 const formattedDay = day < 10 ? `0${day}` : `${day}`;
                 const formattedMonth = this.month < 10 ? `0${this.month}` : `${this.month}`;
-                const imageUrl = `https://s3.hbvu.su/blotpix/${this.year}/${formattedMonth}/${formattedDay}.jpeg`;
+                const imageUrl = `https://objects.hbvu.su/blotpix/${this.year}/${formattedMonth}/${formattedDay}.jpeg`;
 
                 try {
                     const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
