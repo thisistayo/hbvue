@@ -1,8 +1,13 @@
 <template>
     <div class="image-grid">
         <div class="header">
-            <button class="back-button" @click="goHome">home</button>
-            <div class="month-year">{{ getMonthName(month) }} {{ year }}</div>
+            <button class="back-button" @click="goHome">
+                <i class="fas fa-home"></i>
+            </button>
+            <div class="header-content">
+                <div class="month-year">{{ getMonthName(month) }} {{ year }}</div>
+                <div class="click-message">Click on the thumbnails for a full-size image</div>
+            </div>
         </div>
         <div class="thumbnails">
             <ImageThumbnail v-for="(imageUrl, index) in imageUrls" :key="index" :imageUrl="imageUrl"
@@ -12,6 +17,8 @@
         <ImageOverlay :showOverlay="showOverlay" :selectedImage="selectedImage" @close-overlay="closeOverlay" />
     </div>
 </template>
+  
+
   
 <script>
 /* eslint-disable no-unused-vars */
@@ -152,4 +159,38 @@ export default {
     border: 1px solid black;
     /* Add a 1-pixel black border */
 }
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.back-button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
+.click-message {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+    /* Adjust the color as needed */
+}
+
+/* ... existing styles ... */
 </style>

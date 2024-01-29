@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import LandingPage from './components/LandingPage.vue';
+import '@fortawesome/fontawesome-free/css/all.css'
 
 const routes = [
     { path: '/', name: 'Home', component: LandingPage },
