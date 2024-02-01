@@ -12,6 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          path: ./  # Explicitly set the working directory
+
+      - name: List contents of working directory
+        run: ls -la
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

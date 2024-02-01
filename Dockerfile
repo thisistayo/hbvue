@@ -5,7 +5,8 @@ FROM node:20-alpine as build-stage
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY . ./
+COPY package*.json ./
+COPY babel.config.js ./
 
 
 # Install project dependencies
