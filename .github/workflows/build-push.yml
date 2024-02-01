@@ -26,10 +26,11 @@ jobs:
 
       - name: Set Docker Buildx Context
         run: |
-            export DOCKER_CLI_CONTEXT=default
-        
+          export DOCKER_CLI_CONTEXT=default
+      
       - name: Build and push Docker image
         run: |
-            docker buildx use default
-            docker buildx build --platform linux/amd64,linux/arm64 -t lucarv/365vue:latest --push .
+          docker buildx create --use
+          docker buildx build --platform linux/amd64 -t lucarv/365vue:latest --push .
+      
         
