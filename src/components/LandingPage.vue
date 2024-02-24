@@ -21,6 +21,7 @@
             </option>
           </select>
         </div>
+        <div style="display: flex; flex-direction: column;">
         <div class="form-group">
           <label for="year">Select Year (From 2010):</label>
           <input
@@ -34,6 +35,7 @@
           />
         </div>
         <button type="submit">Show Images</button>
+      </div>
       </form>
     </div>
   </div>
@@ -112,8 +114,7 @@ export default {
 }
 
 .column {
-  flex: 1;
-  padding: 20px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -157,6 +158,8 @@ button {
   cursor: pointer;
   border: none;
   border-radius: 8px;
+  width: 50%;
+  align-self: center;
 }
 
 button:hover {
