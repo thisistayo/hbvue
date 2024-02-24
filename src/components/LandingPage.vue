@@ -1,30 +1,40 @@
 <template>
   <div class="landing-page">
-    <div class="container">
-      <!-- Column 1: Random Picture -->
-      <div class="column picture-column">
-        <RandomPicture @pictureFetched="updateRandomImage" />
-      </div>
+    <!-- Column 1: Random Picture -->
+    <div class="column picture-column">
+      <RandomPicture @pictureFetched="updateRandomImage" />
+    </div>
 
-      <!-- Column 2: Form -->
-      <div class="column form-column">
-        <h1>EKSKOG 365</h1>
-        <form @submit.prevent="submitForm" class="form">
-          <div class="form-group">
-            <label for="month">Select Month:</label>
-            <select v-model="selectedMonth" id="month" required>
-              <option v-for="month in months" :key="month.value" :value="month.value">
-                {{ month.label }}
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="year">Select Year (From 2010):</label>
-            <input type="number" v-model="selectedYear" id="year" placeholder="Enter Year" min="2010" :max="currentYear" required />
-          </div>
-          <button type="submit">Show Images</button>
-        </form>
-      </div>
+    <!-- Column 2: Form -->
+    <div class="column form-column">
+      <h1>EKSKOG 365</h1>
+      <form @submit.prevent="submitForm" class="form">
+        <div class="form-group">
+          <label for="month">Select Month:</label>
+          <select v-model="selectedMonth" id="month" required>
+            <option
+              v-for="month in months"
+              :key="month.value"
+              :value="month.value"
+            >
+              {{ month.label }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="year">Select Year (From 2010):</label>
+          <input
+            type="number"
+            v-model="selectedYear"
+            id="year"
+            placeholder="Enter Year"
+            min="2010"
+            :max="currentYear"
+            required
+          />
+        </div>
+        <button type="submit">Show Images</button>
+      </form>
     </div>
   </div>
 </template>
@@ -76,15 +86,17 @@ export default {
     },
     validateYear() {
       const enteredYear = parseInt(this.selectedYear, 10);
-      return !isNaN(enteredYear) && enteredYear >= 2010 && enteredYear <= this.currentYear;
+      return (
+        !isNaN(enteredYear) &&
+        enteredYear >= 2010 &&
+        enteredYear <= this.currentYear
+      );
     },
   },
 };
 </script>
 
 <style scoped>
-/* Your existing styles here */
-
 .landing-page {
   display: flex;
   justify-content: center;
@@ -92,8 +104,11 @@ export default {
   height: 100vh;
 }
 
-.container {
-  display: flex;
+/* set column flex for smaller screens */
+@media only screen and (max-width: 700px) {
+  .landing-page {
+    flex-direction: column-reverse;
+  }
 }
 
 .column {
@@ -141,5 +156,14 @@ button {
   font-size: 1rem;
   cursor: pointer;
   border: none;
+  border-radius: 8px;
+}
+
+button:hover {
+  background-color: green
+}
+
+button:active {
+  background-color: darkgreen
 }
 </style>

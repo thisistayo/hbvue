@@ -3,7 +3,7 @@
     <img :src="imageUrl" @load="onImageLoad" alt="Thumbnail" />
   </div>
 </template>
-  
+
 <script>
 export default {
   props: {
@@ -17,12 +17,12 @@ export default {
       console.log(`Image displayed`);
     },
     handleClick() {
-      console.log('Thumbnail clicked:', this.imageUrl);
+      console.log("Thumbnail clicked:", this.imageUrl);
     },
   },
 };
 </script>
-  
+
 <style scoped>
 .image-thumbnail {
   max-width: 100%;
@@ -43,5 +43,3 @@ export default {
   /* Preserve aspect ratio and fit within the container */
 }
 </style>
-  
-  
