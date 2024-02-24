@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4">
+  <div class=" mt-4">
     <div v-if="imageUrl" class="card">
       <img :src="imageUrl" alt="Random Picture" class="card-img-top" />
       <div class="card-body">
@@ -80,12 +80,6 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
 
 * {
     box-sizing: border-box;
