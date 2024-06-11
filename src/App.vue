@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <LandingPage @form-submitted="setMonthAndYear" v-if="!showImages" />
-    <ImageGrid v-if="showImages" :month="selectedMonth" :year="selectedYear" @home="goToLandingPage" />
+    <ImageGrid v-if="showImages" :month="selectedMonth" :year="selectedYear" @home="goToLandingPage" @navigate="navigateToMonth" />
   </div>
 </template>
 
@@ -26,6 +26,12 @@ export default {
     goToLandingPage() {
       console.log("Received 'home' event in App.vue");
       this.showImages = false;
+    },
+    navigateToMonth({ month, year }) {
+      console.log("APP.VUE >>>> Navigating to month:", month, "year:", year);
+      this.selectedMonth = month;
+      this.selectedYear = year;
+      this.showImages = true;
     },
   },
   components: {

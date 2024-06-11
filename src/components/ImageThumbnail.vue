@@ -14,10 +14,10 @@ export default {
   },
   methods: {
     onImageLoad() {
-      console.log(`Image displayed`);
+      //console.log(`Image displayed`);
     },
     handleClick() {
-      console.log("Thumbnail clicked:", this.imageUrl);
+      //console.log("Thumbnail clicked:", this.imageUrl);
     },
   },
 };

@@ -5,7 +5,11 @@
                 <i class="fas fa-home"></i>
             </button>
             <div class="header-content">
-                <div class="month-year">{{ getMonthName(month) }} {{ year }}</div>
+                <div class="month-year">
+                    <span class="arrow" @click="previous">&larr;</span>
+                    {{ getMonthName(month) }} {{ year }}
+                    <span class="arrow" @click="next">&rarr;</span>
+                </div>
                 <div class="click-message">Click on the thumbnails for a full-size image</div>
             </div>
         </div>
@@ -17,9 +21,7 @@
         <ImageOverlay :showOverlay="showOverlay" :selectedImage="selectedImage" @close-overlay="closeOverlay" />
     </div>
 </template>
-  
 
-  
 <script>
 /* eslint-disable no-unused-vars */
 
@@ -52,32 +54,40 @@ export default {
     mounted() {
         this.fetchImages();
     },
+    watch: {
+        month: 'fetchImages',
+        year: 'fetchImages',
+    },
     methods: {
         async fetchImages() {
-            console.log(this.year + '/' + this.month)
             const lastDay = new Date(this.year, this.month, 0).getDate();
 
-            for (let day = 1; day <= lastDay; day++) {
-                const formattedDay = day < 10 ? `0${day}` : `${day}`;
-                const formattedMonth = this.month < 10 ? `0${this.month}` : `${this.month}`;
-                const imageUrl = `https://objects.hbvu.su/blotpix/${this.year}/${formattedMonth}/${formattedDay}.jpeg`;
+            try {
+                const newImageUrls = await Promise.all(
+                    Array.from({ length: lastDay }, async (_, index) => {
+                        const day = index + 1;
+                        const formattedDay = day < 10 ? `0${day}` : `${day}`;
+                        const formattedMonth = this.month < 10 ? `0${this.month}` : `${this.month}`;
+                        const imageUrl = `https://objects.hbvu.su/blotpix/${this.year}/${formattedMonth}/${formattedDay}.jpeg`;
 
-                try {
-                    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-                    console.log(`Image received for day ${day}: ${imageUrl}`);
+                        try {
+                            const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+                            const base64 = btoa(
+                                new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+                            );
+                            const dataUrl = `data:image/jpeg;base64,${base64}`;
+                            return dataUrl;
+                        } catch (error) {
+                            console.error(`Error fetching image for day ${day}: ${imageUrl}`, error);
+                            return null;
+                        }
+                    })
+                );
 
-                    const base64 = btoa(
-                        new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
-                    );
-                    console.log(`Image converted to base64 for day ${day}`);
-
-                    const dataUrl = `data:image/jpeg;base64,${base64}`;
-
-                    this.imageUrls.push(dataUrl);
-                    console.log(`Image fetched and displayed for day ${day}: ${imageUrl}`);
-                } catch (error) {
-                    console.error(`Error fetching image for day ${day}: ${imageUrl}`, error);
-                }
+                // Filter out any null values from failed requests
+                this.imageUrls = newImageUrls.filter(url => url !== null);
+            } catch (error) {
+                console.error("Error fetching images:", error);
             }
         },
         getMonthName(month) {
@@ -86,15 +96,28 @@ export default {
         },
         goHome() {
             this.$emit('home');
-            console.log("home pressed")
+        },
+        previous() {
+            const previousMonth = this.month === 1 ? 12 : this.month - 1;
+            const previousYear = this.month === 1 ? this.year - 1 : this.year;
 
+            console.log('previous clicked: ' + previousMonth);
+            console.log('Year:', previousYear);
+            this.$emit('navigate', { month: previousMonth, year: previousYear });
+        },
+        next() {
+            const nextMonth = this.month === 12 ? 1 : this.month + 1;
+            const nextYear = this.month === 12 ? this.year + 1 : this.year;
+
+            console.log('next clicked: ' + nextMonth);
+            console.log('Year:', nextYear);
+            this.$emit('navigate', { month: nextMonth, year: nextYear });
         },
         openImageOverlay(imageUrl) {
-            console.log('Opening image overlay for:', imageUrl);
+            //console.log('Opening image overlay for:', imageUrl);
             this.selectedImage = imageUrl;
             this.showOverlay = true;
         },
-
         closeOverlay() {
             this.showOverlay = false;
             this.selectedImage = "";
@@ -102,7 +125,7 @@ export default {
     },
 };
 </script>
-  
+
 <style scoped>
 .image-grid {
     margin-top: 20px;
@@ -159,6 +182,7 @@ export default {
     border: 1px solid black;
     /* Add a 1-pixel black border */
 }
+
 .header {
     display: flex;
     align-items: center;
@@ -173,14 +197,14 @@ export default {
 }
 
 .back-button {
-  background-color: white;
-  color: black;
-  border: none;
-  padding: 10px 15px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px;
-  cursor: pointer;
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 
