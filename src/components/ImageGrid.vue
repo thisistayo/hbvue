@@ -18,13 +18,14 @@
                 @click="openImageOverlay(imageUrl)" />
             <div v-if="imageUrls.length === 0">Fetching....</div>
         </div>
-        <ImageOverlay :showOverlay="showOverlay" :selectedImage="selectedImage" @close-overlay="closeOverlay" />
+        <ImageOverlay :showOverlay="showOverlay" :selectedImage="selectedImage" @close-overlay="closeOverlay"
+            @prvImg="prvImg" @nxtImg="nxtImg" />
+
     </div>
 </template>
 
 <script>
 /* eslint-disable no-unused-vars */
-
 import ImageThumbnail from "@/components/ImageThumbnail";
 import ImageOverlay from "@/components/ImageOverlay";
 import axios from "axios";
@@ -114,13 +115,19 @@ export default {
             this.$emit('navigate', { month: nextMonth, year: nextYear });
         },
         openImageOverlay(imageUrl) {
-            //console.log('Opening image overlay for:', imageUrl);
+            console.log('Opening image overlay for');
             this.selectedImage = imageUrl;
             this.showOverlay = true;
         },
         closeOverlay() {
             this.showOverlay = false;
             this.selectedImage = "";
+        },
+        prvImg() {
+            console.log("emit event received for previous image")
+        },
+        nxtImg() {
+            console.log("emit event received for next image")
         },
     },
 };

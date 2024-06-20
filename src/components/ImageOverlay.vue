@@ -1,9 +1,12 @@
 <!-- ImageOverlay.vue -->
 <template>
   <div class="image-overlay" v-if="showOverlay">
-    <span class="close-button" @click="closeImageOverlay"
-      >Return to gallery</span
-    >
+    <div class="month-year">
+      <span class="overlay-button" @click="prvImg">previous</span>
+      <span class="overlay-button" @click="closeImageOverlay">Return to gallery</span>
+      <span class="overlay-button" @click="nxtImg">next</span>
+    </div>
+
     <img :src="selectedImage" alt="Full Image" />
   </div>
 </template>
@@ -23,6 +26,13 @@ export default {
   methods: {
     closeImageOverlay() {
       this.$emit("close-overlay");
+    },
+    prvImg() {
+      this.$emit("prvImg");
+
+    },
+    nxtImg() {
+      this.$emit("nxtImg");
     },
     /* close button was annoying me so i added another way to close the picture ;P */
     handleEscapeKey(event) {
@@ -57,8 +67,9 @@ export default {
   max-height: 90%;
 }
 
-.close-button {
+.overlay-button {
   margin-top: 0.5rem;
+  margin-right: 10px; /* Add this line to create space between buttons */
   color: black;
   font-size: 20px;
   cursor: pointer;
@@ -68,11 +79,11 @@ export default {
 
 }
 
-.close-button:hover {
+.overlay-button:hover {
   background-color: gray;
 }
 
-.close-button:active {
+.overlay-button:active {
   background-color: darkgray;
 }
 </style>
