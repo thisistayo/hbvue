@@ -15,12 +15,11 @@
         </div>
         <div class="thumbnails">
             <ImageThumbnail v-for="(imageUrl, index) in imageUrls" :key="index" :imageUrl="imageUrl"
-                @click="openImageOverlay(imageUrl)" />
+                @click="openImageOverlay(index)" />
             <div v-if="imageUrls.length === 0">Fetching....</div>
         </div>
         <ImageOverlay :showOverlay="showOverlay" :selectedImage="selectedImage" @close-overlay="closeOverlay"
             @prvImg="prvImg" @nxtImg="nxtImg" />
-
     </div>
 </template>
 
@@ -46,6 +45,7 @@ export default {
             imageUrls: [],
             showOverlay: false,
             selectedImage: "",
+            selectedIndex: 0, // Track the currently selected image index
         };
     },
     components: {
@@ -114,20 +114,32 @@ export default {
             console.log('Year:', nextYear);
             this.$emit('navigate', { month: nextMonth, year: nextYear });
         },
-        openImageOverlay(imageUrl) {
-            console.log('Opening image overlay for');
-            this.selectedImage = imageUrl;
+        openImageOverlay(index) {
+            console.log('Opening image overlay for index', index);
+            this.selectedIndex = index;
+            this.selectedImage = this.imageUrls[index];
             this.showOverlay = true;
         },
         closeOverlay() {
             this.showOverlay = false;
             this.selectedImage = "";
+            this.selectedIndex = 0;
         },
         prvImg() {
-            console.log("emit event received for previous image")
+            if (this.selectedIndex > 0) {
+                this.selectedIndex--;
+                this.selectedImage = this.imageUrls[this.selectedIndex];
+            } else {
+                alert("No previous day in the current month.");
+            }
         },
         nxtImg() {
-            console.log("emit event received for next image")
+            if (this.selectedIndex < this.imageUrls.length - 1) {
+                this.selectedIndex++;
+                this.selectedImage = this.imageUrls[this.selectedIndex];
+            } else {
+                alert("No next day in the current month.");
+            }
         },
     },
 };
@@ -213,7 +225,6 @@ export default {
     font-size: 16px;
     cursor: pointer;
 }
-
 
 .click-message {
     text-align: center;
