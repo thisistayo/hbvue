@@ -70,6 +70,7 @@ export default {
                         const formattedDay = day < 10 ? `0${day}` : `${day}`;
                         const formattedMonth = this.month < 10 ? `0${this.month}` : `${this.month}`;
                         const imageUrl = `https://objects.hbvu.su/blotpix/${this.year}/${formattedMonth}/${formattedDay}.jpeg`;
+                        console.log('Fetching image from URL:', imageUrl); // Log URL
 
                         try {
                             const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
@@ -77,6 +78,7 @@ export default {
                                 new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
                             );
                             const dataUrl = `data:image/jpeg;base64,${base64}`;
+                            console.log('Fetched image for day', day, dataUrl); // Log successful fetch
                             return dataUrl;
                         } catch (error) {
                             console.error(`Error fetching image for day ${day}: ${imageUrl}`, error);
