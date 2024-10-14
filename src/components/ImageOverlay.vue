@@ -19,6 +19,8 @@ export default {
     showOverlay: {
       type: Boolean,
       required: true,
+      selectedImage: String,
+      selectedDate: String,
     },
     selectedImage: {
       type: String,

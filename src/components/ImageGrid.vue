@@ -14,19 +14,14 @@
             </div>
         </div>
         <div class="thumbnails">
-            <!-- Loading indicator -->
             <div v-if="isLoading" class="loading-indicator">Loading images...</div>
-
-            <!-- Image thumbnails -->
-            <div v-else v-for="(imageUrl, index) in imageUrls" :key="index" class="image-card">
+            <div v-else-if="imageUrls.length === 0" class="no-images">No images available for this period.</div>
+            <div v-else v-for="(image, index) in imageUrls" :key="index" class="image-card">
                 <div class="image-thumbnail" @click="openImageOverlay(index)">
-                    <img :src="imageUrl" :alt="`Image for ${formatDate(index + 1)}`">
+                    <img :src="image.url" :alt="`Image for ${formatDate(image.day)}`">
                 </div>
-                <div class="image-footer">{{ formatDate(index + 1) }}</div>
+                <div class="image-footer">{{ formatDate(image.day) }}</div>
             </div>
-
-            <!-- Message when no images are available -->
-            <div v-if="imageUrls.length === 0 && !isLoading">No images available.</div>
         </div>
         <ImageOverlay :showOverlay="showOverlay" :selectedImage="selectedImage" :selectedDate="selectedDate"
             @close-overlay="closeOverlay" @prvImg="prvImg" @nxtImg="nxtImg" />
@@ -72,13 +67,29 @@ export default {
             this.isLoading = true;
             this.imageUrls = [];
 
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1;
+            const currentDay = today.getDate() - 1;
+
             const lastDay = new Date(this.year, this.month, 0).getDate();
-            this.imageUrls = Array.from({ length: lastDay }, (_, index) => {
-                const day = index + 1;
+            this.startDay = (this.year === 2010 && this.month === 3) ? 11 : 1;
+
+            for (let day = this.startDay; day <= lastDay; day++) {
                 const formattedDay = day < 10 ? `0${day}` : `${day}`;
                 const formattedMonth = this.month < 10 ? `0${this.month}` : `${this.month}`;
-                return `https://objects.hbvu.su/blotpix/${this.year}/${formattedMonth}/${formattedDay}.jpeg`;
-            });
+
+                // Check if the date is in the future
+                const isFutureDate =
+                    this.year > currentYear ||
+                    (this.year === currentYear && this.month > currentMonth) ||
+                    (this.year === currentYear && this.month === currentMonth && day > currentDay);
+
+                this.imageUrls.push({
+                    url: isFutureDate ? null : `https://objects.hbvu.su/blotpix/${this.year}/${formattedMonth}/${formattedDay}.jpeg`,
+                    day: day
+                });
+            }
 
             this.isLoading = false;
         },
@@ -87,6 +98,11 @@ export default {
             return monthNames[month - 1] || '';
         },
         formatDate(day) {
+            if (!day || isNaN(day)) {
+                console.error("Invalid day passed to formatDate:", day);
+                return "Invalid Date";
+            }
+
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const suffixes = ["st", "nd", "rd", "th"];
 
@@ -101,8 +117,6 @@ export default {
                     default: suffix = suffixes[3];
                 }
             }
-
-            console.log(`${monthNames[this.month - 1]} ${day}${suffix}, ${this.year}`)
 
             return `${monthNames[this.month - 1]} ${day}${suffix}, ${this.year}`;
         },
@@ -121,10 +135,8 @@ export default {
         },
         openImageOverlay(index) {
             this.selectedIndex = index;
-            this.selectedImage = this.imageUrls[index];
-            const formattedDate = this.formatDate(index + 1);
-            console.log("Date being sent to overlay:", formattedDate);
-            this.selectedDate = formattedDate;
+            this.selectedImage = this.imageUrls[index].url; // Change this line
+            this.selectedDate = this.formatDate(this.imageUrls[index].day);
             this.showOverlay = true;
         },
         closeOverlay() {
@@ -136,19 +148,20 @@ export default {
         prvImg() {
             if (this.selectedIndex > 0) {
                 this.selectedIndex--;
-                this.selectedImage = this.imageUrls[this.selectedIndex];
-                this.selectedDate = this.formatDate(this.selectedIndex + 1);
+                this.selectedImage = this.imageUrls[this.selectedIndex].url;
+                this.selectedDate = this.formatDate(this.imageUrls[this.selectedIndex].day);
             } else {
-                alert("No previous day in the current month.");
+                alert("This is the first available image for this month.");
             }
         },
+
         nxtImg() {
             if (this.selectedIndex < this.imageUrls.length - 1) {
                 this.selectedIndex++;
-                this.selectedImage = this.imageUrls[this.selectedIndex];
-                this.selectedDate = this.formatDate(this.selectedIndex + 1);
+                this.selectedImage = this.imageUrls[this.selectedIndex].url;
+                this.selectedDate = this.formatDate(this.imageUrls[this.selectedIndex].day);
             } else {
-                alert("No next day in the current month.");
+                alert("This is the last available image for this month.");
             }
         },
     },
@@ -158,6 +171,10 @@ export default {
 <style scoped>
 .image-grid {
     margin-top: 20px;
+    height: calc(100vh - 40px);
+    /* Subtract margin-top */
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -191,8 +208,12 @@ export default {
 
 .thumbnails {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 15px;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 5px;
 }
 
 .image-card {
@@ -210,9 +231,7 @@ export default {
 }
 
 .image-thumbnail {
-    width: 100%;
-    height: 0;
-    padding-bottom: 100%;
+    flex-grow: 1;
     position: relative;
     cursor: pointer;
 }
@@ -225,18 +244,12 @@ export default {
 }
 
 .image-footer {
-    padding: 10px;
+    padding: 8px;
     text-align: center;
     background-color: #f8f8f8;
-    font-size: 16px;
+    font-size: 12px;
     color: #333;
     font-family: Verdana, sans-serif;
-}
-
-.image-footer sup {
-    font-size: 0.6em;
-    vertical-align: super;
-    margin-left: 1px;
 }
 
 .header-content {
@@ -258,5 +271,34 @@ export default {
     padding: 20px;
     font-size: 18px;
     color: #555;
+}
+
+/* Customize scrollbar for webkit browsers */
+.thumbnails::-webkit-scrollbar {
+    width: 8px;
+}
+
+.thumbnails::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.thumbnails::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.thumbnails::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+@media (max-width: 768px) {
+    .thumbnails {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .image-footer {
+        font-size: 10px;
+        padding: 6px;
+    }
 }
 </style>
