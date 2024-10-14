@@ -1,11 +1,15 @@
 <template>
   <div class="image-overlay" v-if="showOverlay">
+    <div class="image-card">
+      <img :src="selectedImage" alt="Full Image" />
+      <div class="image-footer">{{ selectedDate }}
+      </div>
+    </div>
     <div class="buttons-container">
       <span class="overlay-button" @click="prvImg">previous</span>
-      <span class="overlay-button" @click="closeImageOverlay">Return to gallery</span>
+      <span class="overlay-button" @click="closeImageOverlay">back</span>
       <span class="overlay-button" @click="nxtImg">next</span>
     </div>
-    <img :src="selectedImage" alt="Full Image" />
   </div>
 </template>
 
@@ -17,6 +21,10 @@ export default {
       required: true,
     },
     selectedImage: {
+      type: String,
+      required: true,
+    },
+    selectedDate: {
       type: String,
       required: true,
     },
@@ -37,6 +45,7 @@ export default {
   },
   mounted() {
     document.addEventListener("keydown", this.handleEscapeKey);
+    console.log("ImageOverlay mounted with date:", this.selectedDate);
   },
   unmounted() {
     document.removeEventListener("keydown", this.handleEscapeKey);
@@ -51,41 +60,63 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
-.image-overlay img {
+.image-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   max-width: 90%;
   max-height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.image-card img {
+  max-width: 100%;
+  max-height: calc(90vh - 60px);
+  object-fit: contain;
+}
+
+.image-footer {
+  padding: 15px;
+  text-align: center;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  color: #333;
+  font-family: Verdana, sans-serif;
 }
 
 .buttons-container {
-  position: absolute;
-  bottom: 20px; /* Position buttons at the bottom */
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
 .overlay-button {
-  margin: 0 10px; /* Add space between buttons */
-  color: black;
-  font-size: 20px;
+  margin: 0 10px;
+  color: white;
+  font-size: 18px;
   cursor: pointer;
-  background-color: lightgray;
-  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px 15px;
   border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
 .overlay-button:hover {
-  background-color: gray;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .overlay-button:active {
-  background-color: darkgray;
+  background-color: rgba(255, 255, 255, 0.4);
 }
 </style>
