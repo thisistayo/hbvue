@@ -73,7 +73,9 @@ export default {
             const currentDay = today.getDate() - 1;
 
             const lastDay = new Date(this.year, this.month, 0).getDate();
-            this.startDay = (this.year === 2010 && this.month === 3) ? 11 : 1;
+
+            // this.startDay = (this.year === 2010 && this.month === 3) ? 11 : 1;
+            this.startDay = 1;
 
             for (let day = this.startDay; day <= lastDay; day++) {
                 const formattedDay = day < 10 ? `0${day}` : `${day}`;
