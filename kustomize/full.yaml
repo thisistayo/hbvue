@@ -18,7 +18,7 @@ metadata:
   name: hbvue
   namespace: webapps
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: hbvue
